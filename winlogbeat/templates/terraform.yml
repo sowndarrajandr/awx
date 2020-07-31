@@ -1,0 +1,8 @@
+- terraform:
+    project_path: '/winlogbeat/templates/'
+    state: present
+    force_init: yes
+    command: 'terraform apply'
+    backend_config:
+      region: "eu-west-1"
+      key: "azure.tfstate"

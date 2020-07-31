@@ -1,0 +1,35 @@
+#Installing Winlogbeat service in Windows
+
+- name: Check if a winlogbeat service is installed
+  win_service:
+    name: winlogbeat
+  register: service_info
+  
+- name: Copy winlogbeat
+  tags: winlogbeat
+  when: not service_info.stat.exists
+    win_unzip:
+        src: winlogbeat.zip
+        dest: 'C:/Program Files/winlogbeat/
+        creates: 'C:/Program Files/winlogbeat/'
+
+-name: Copy Configuration files
+    tags: winlogbeat
+    copy:
+        src: winlogbeat.yml
+        dest: 'C:/Program Files/winlogbeat/'
+
+-name: Install Service
+    tags: winlogbeat
+    win_command: powershell.exe -ExecutionPolicy ByPass -File 'C:/Program Files/winlogbeat/install-service-winlogbeat.ps1
+    
+- name: Set service startup mode to auto and ensure it is started
+  win_service:
+    name: winlogbeat
+    start_mode: auto
+    state: started
+    
+- name: Restart the service
+  win_service:
+    name: winlogbeat
+    state: restarted
